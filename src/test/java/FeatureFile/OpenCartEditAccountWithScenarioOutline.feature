@@ -1,5 +1,6 @@
 Feature: Edit Account Function
 
+  @Smoke
   Scenario Outline: Edit first name in my profile
     Given Navigate to Opencart app
     And Login to your account
