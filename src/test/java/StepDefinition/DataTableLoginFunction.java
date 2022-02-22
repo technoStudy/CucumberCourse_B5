@@ -1,29 +1,51 @@
 package StepDefinition;
 
 import io.cucumber.java.en.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+
+import java.util.List;
 
 public class DataTableLoginFunction {
 
+    WebDriver driver;
+
     @Given("Navigate to demoWebShop")
     public void navigate_to_demo_web_shop() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+
+        driver.get("http://demowebshop.tricentis.com/login");
     }
+
     @When("User enter invalid email address")
-    public void user_enter_invalid_email_address(io.cucumber.datatable.DataTable dataTable) {
-        // Write code here that turns the phrase above into concrete actions
-        // For automatic transformation, change DataTable to one of
-        // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-        // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-        // Double, Byte, Short, Long, BigInteger or BigDecimal.
-        //
-        // For other transformations you can register a DataTableType.
-        throw new io.cucumber.java.PendingException();
+    public void user_enter_invalid_email_address(io.cucumber.datatable.DataTable dataTable) throws InterruptedException {
+
+        List<String> testData = dataTable.asList();
+
+        WebElement emailInput = driver.findElement(By.id("Email"));
+        WebElement submit = driver.findElement(By.xpath("//input[@value='Log in']"));
+
+        for (String element : testData) {
+            emailInput.clear();
+            emailInput.sendKeys(element);
+            submit.click();
+            Thread.sleep(3000);
+            WebElement errorMessage = driver.findElement(By.xpath("//span[@class='field-validation-error']"));
+            Assert.assertTrue(errorMessage.isDisplayed());
+            Thread.sleep(3000);
+        }
+
     }
+
     @Then("User should see a warning")
     public void user_should_see_a_warning() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        driver.quit();
     }
 
 }
